@@ -269,8 +269,8 @@ public class ForecastFragment extends Fragment {
         protected void onPostExecute(String[] strings) {
             super.onPostExecute(strings);
             List<String> foreCastItems = Arrays.asList(strings);
-            adapter = new ArrayAdapter(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_text_view, foreCastItems);
-            listView.setAdapter(adapter);
+            adapter.clear();
+            adapter.addAll(foreCastItems);
         }
     }
 }
