@@ -13,4 +13,4 @@ If you are new to Android dev and want to learn how this code works you should l
 
 # Prerequisites
 
-This course is intended for students with at least 3 years of programming experience in Java or another object-oriented programming language (for example: C++, Objective C or Python). Udacity's Intro to Java is a helpful background if you're looking to refresh your Java skills.
+The Audacity course is intended for students with at least 3 years of programming experience in Java or another object-oriented programming language (for example: C++, Objective C or Python). Udacity's Intro to Java is a helpful background if you're looking to refresh your Java skills.
