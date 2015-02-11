@@ -2,6 +2,7 @@ package com.example.diokey.sunshine.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -79,12 +80,20 @@ public class ForecastFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedText = adapter.getItem(position);
 
-                showToast(getActivity(), selectedText);
+                //showToast(getActivity(), selectedText);
+                launchIntent(selectedText);
             }
         });
 
 
         return rootView;
+    }
+
+    private  void launchIntent(String text) {
+        Intent intent = new Intent(getActivity(),DetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity( intent);
+
     }
 
     private void showToast(Context context, CharSequence text) {
