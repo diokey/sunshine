@@ -231,6 +231,17 @@ public class ForecastFragment extends Fragment {
             String units = "metric";
             String COUNT = "cnt";
             String count = "7";
+
+            //get unit from user's preference
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            String preferredUnit = sharedPreferences.getString("units",getString(R.string.pref_units_default_value));
+
+            if(preferredUnit != null && ! preferredUnit.isEmpty()) {
+                units = preferredUnit;
+            }
+
+
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
