@@ -3,9 +3,11 @@ package com.example.diokey.sunshine.app;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -113,7 +115,13 @@ public class ForecastFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        final String MOUNTAIN_VIEW_ZIP_CODE = "94043";
+        String MOUNTAIN_VIEW_ZIP_CODE = "94043";
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        MOUNTAIN_VIEW_ZIP_CODE = preferences.getString("location", "94043");
+
+        Log.i("Forecast","Preference = " + MOUNTAIN_VIEW_ZIP_CODE);
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.refresh) {
             FetchWeatherTask task = new FetchWeatherTask();
@@ -124,6 +132,7 @@ public class ForecastFragment extends Fragment {
         if (id == R.id.action_settings) {
             Intent intent = new Intent(getActivity(), SettingsActivity.class);
             startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
