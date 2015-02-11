@@ -92,7 +92,7 @@ public class ForecastFragment extends Fragment {
     private  void launchIntent(String text) {
         Intent intent = new Intent(getActivity(),DetailActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, text);
-        startActivity( intent);
+        startActivity(intent);
 
     }
 
@@ -113,12 +113,17 @@ public class ForecastFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        final String MOUNTAIN_VIEW_ZIP_CODE = "94043";
         //noinspection SimplifiableIfStatement
         if (id == R.id.refresh) {
             FetchWeatherTask task = new FetchWeatherTask();
-            task.execute("94043");
+            task.execute(MOUNTAIN_VIEW_ZIP_CODE);
             return true;
+        }
+
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
