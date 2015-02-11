@@ -53,6 +53,12 @@ public class ForecastFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setHasOptionsMenu(true);
@@ -64,13 +70,6 @@ public class ForecastFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         List<String> foreCastItems = new ArrayList<String>();
-
-        foreCastItems.add("Today - Sunny - 88/64");
-        foreCastItems.add("Tomorrow - Foggy - 70/46");
-        foreCastItems.add("Wednesday - Sunny - 88/64");
-        foreCastItems.add("Thursday - Rainy - 65/46");
-        foreCastItems.add("Friday - Snowy - 4/-4");
-        foreCastItems.add("Saturday - Cloudy - 18/14");
 
         //create an array adapter
         adapter = new ArrayAdapter(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_text_view, foreCastItems);
@@ -115,17 +114,10 @@ public class ForecastFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        String MOUNTAIN_VIEW_ZIP_CODE = "94043";
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        MOUNTAIN_VIEW_ZIP_CODE = preferences.getString("location", "94043");
-
-        Log.i("Forecast","Preference = " + MOUNTAIN_VIEW_ZIP_CODE);
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.refresh) {
-            FetchWeatherTask task = new FetchWeatherTask();
-            task.execute(MOUNTAIN_VIEW_ZIP_CODE);
+            updateWeather();
             return true;
         }
 
@@ -136,6 +128,17 @@ public class ForecastFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeather () {
+
+        String MOUNTAIN_VIEW_ZIP_CODE = "94043";
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        MOUNTAIN_VIEW_ZIP_CODE = preferences.getString("location", getString(R.string.pref_default_location));
+
+        FetchWeatherTask task = new FetchWeatherTask();
+        task.execute(MOUNTAIN_VIEW_ZIP_CODE);
     }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
