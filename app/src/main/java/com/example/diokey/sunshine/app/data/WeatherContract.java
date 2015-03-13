@@ -47,8 +47,8 @@ public class WeatherContract {
         public static final String COLUMN_CITY_NAME = "city_name";
 
         //these 2 columns will be used to store geo coordinates
-        public static final String COLUMN_CORD_LAT = "coord_lat";
-        public static final String COLUMN_CORD_LONG = "coord_long";
+        public static final String COLUMN_COORD_LAT = "coord_lat";
+        public static final String COLUMN_COORD_LONG = "coord_long";
 
     }
 
