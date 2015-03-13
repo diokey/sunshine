@@ -15,6 +15,7 @@
  */
 package com.example.diokey.sunshine.app.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
@@ -111,23 +112,41 @@ public class TestDb extends AndroidTestCase {
         also make use of the ValidateCurrentRecord function from within TestUtilities.
     */
     public void testLocationTable() {
+
+        testSaveLocation();
+    }
+
+    private long testSaveLocation () {
         // First step: Get reference to writable database
+        SQLiteDatabase database = new WeatherDbHelper(mContext).getWritableDatabase();
 
         // Create ContentValues of what you want to insert
         // (you can use the createNorthPoleLocationValues if you wish)
+        ContentValues data = TestUtilities.createNorthPoleLocationValues();
 
         // Insert ContentValues into database and get a row ID back
+        long insertId = database.insert(WeatherContract.LocationEntry.TABLE_NAME, null, data);
+
+        assertTrue("Should return a positive value", insertId > 0);
 
         // Query the database and receive a Cursor back
+        Cursor cursor = database.rawQuery("SELECT * FROM " + WeatherContract.LocationEntry.TABLE_NAME, null);
 
         // Move the cursor to a valid database row
+        assertTrue("No record have been saved", cursor.moveToNext());
 
         // Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
         // query if you like)
+        TestUtilities.validateCurrentRecord("Wrong record found", cursor, data);
+
+        assertFalse("More that one row returned", cursor.moveToNext());
 
         // Finally, close the cursor and database
+        cursor.close();
+        database.close();
 
+        return insertId;
     }
 
     /*
@@ -140,36 +159,42 @@ public class TestDb extends AndroidTestCase {
         // First insert the location, and then use the locationRowId to insert
         // the weather. Make sure to cover as many failure cases as you can.
 
+        long locationId = testSaveLocation();
+        assertTrue("Error : could not save location", locationId != -1);
         // Instead of rewriting all of the code we've already written in testLocationTable
         // we can move this code to insertLocation and then call insertLocation from both
         // tests. Why move it? We need the code to return the ID of the inserted location
         // and our testLocationTable can only return void because it's a test.
 
         // First step: Get reference to writable database
+        SQLiteDatabase database = new WeatherDbHelper(mContext).getWritableDatabase();
+
+        assertNotNull("ERROR : Unable to get connection to the database",database);
 
         // Create ContentValues of what you want to insert
         // (you can use the createWeatherValues TestUtilities function if you wish)
-
+        ContentValues weatherData = TestUtilities.createWeatherValues(locationId);
         // Insert ContentValues into database and get a row ID back
+        long weatherDataId = database.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, weatherData);
+
+        assertTrue("Error saving the weather data", weatherDataId != -1);
 
         // Query the database and receive a Cursor back
 
+        Cursor cursor = database.rawQuery("Select * FROM "+ WeatherContract.WeatherEntry.TABLE_NAME, null);
+
         // Move the cursor to a valid database row
+        assertTrue("No data returned", cursor.moveToNext());
 
         // Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
         // query if you like)
+        TestUtilities.validateCurrentRecord("Error : Invalid data returned", cursor, weatherData);
 
+        assertFalse("Error : More than one rows returned", cursor.moveToNext());
         // Finally, close the cursor and database
+        cursor.close();
+        database.close();
     }
 
-
-    /*
-        Students: This is a helper method for the testWeatherTable quiz. You can move your
-        code from testLocationTable to here so that you can call this code from both
-        testWeatherTable and testLocationTable.
-     */
-    public long insertLocation() {
-        return -1L;
-    }
 }
