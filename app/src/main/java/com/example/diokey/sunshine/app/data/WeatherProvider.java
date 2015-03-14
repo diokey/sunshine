@@ -24,6 +24,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+import java.sql.Statement;
+
 public class WeatherProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
@@ -119,15 +121,15 @@ public class WeatherProvider extends ContentProvider {
         // URI.  It's common to use NO_MATCH as the code for this case. Add the constructor below.
 
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String contentAuthorith = WeatherContract.CONTENT_AUTHORITY;
+        final String contentAuthority = WeatherContract.CONTENT_AUTHORITY;
         // 2) Use the addURI function to match each of the types.  Use the constants from
         // WeatherContract to help define the types to the UriMatcher.
-        uriMatcher.addURI(contentAuthorith, WeatherContract.WeatherEntry.TABLE_NAME, WEATHER);
-        uriMatcher.addURI(contentAuthorith, WeatherContract.WeatherEntry.TABLE_NAME+ "/*" ,
+        uriMatcher.addURI(contentAuthority, WeatherContract.WeatherEntry.TABLE_NAME, WEATHER);
+        uriMatcher.addURI(contentAuthority, WeatherContract.WeatherEntry.TABLE_NAME+ "/*" ,
                 WEATHER_WITH_LOCATION);
-        uriMatcher.addURI(contentAuthorith, WeatherContract.WeatherEntry.TABLE_NAME+ "/*/#",
+        uriMatcher.addURI(contentAuthority, WeatherContract.WeatherEntry.TABLE_NAME+ "/*/#",
                 WEATHER_WITH_LOCATION_AND_DATE);
-        uriMatcher.addURI(contentAuthorith, WeatherContract.LocationEntry.TABLE_NAME, LOCATION);
+        uriMatcher.addURI(contentAuthority, WeatherContract.LocationEntry.TABLE_NAME, LOCATION);
 
         // 3) Return the new matcher!
         return uriMatcher;
@@ -189,12 +191,28 @@ public class WeatherProvider extends ContentProvider {
             }
             // "weather"
             case WEATHER: {
-                retCursor = null;
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        WeatherContract.WeatherEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
                 break;
             }
             // "location"
             case LOCATION: {
-                retCursor = null;
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        WeatherContract.LocationEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
                 break;
             }
 
