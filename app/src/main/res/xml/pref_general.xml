@@ -15,8 +15,8 @@
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
     <ListPreference
         android:key="units"
-        android:title="@string/pref_units"
-        android:defaultValue="metric"
+        android:title="@string/pref_units_key"
+        android:defaultValue="@string/pref_units_metric"
         android:entries="@array/pref_unit_list_titles"
         android:entryValues="@array/pref_units_list_values"
         android:negativeButtonText="@null"

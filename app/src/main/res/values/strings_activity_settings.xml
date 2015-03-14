@@ -13,9 +13,11 @@
 
     <string name="pref_location">Location</string>
     <string name="pref_default_location">94043</string>
+    <string name="pref_units_metric">Celsius</string>
+    <string name="pref_units_imperial">Imperial</string>
 
     <string name="pref_units_default_value">metric</string>
-    <string name="pref_units">Units</string>
+    <string name="pref_units_key">Units</string>
     <string-array name="pref_unit_list_titles">
         <item>Celsius</item>
         <item>Fahrenheit</item>

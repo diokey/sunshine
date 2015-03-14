@@ -235,7 +235,7 @@ public class ForecastFragment extends Fragment {
             //get unit from user's preference
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-            String preferredUnit = sharedPreferences.getString("units",getString(R.string.pref_units_default_value));
+            String preferredUnit = sharedPreferences.getString(getString(R.string.pref_units_key),getString(R.string.pref_units_default_value));
 
             if(preferredUnit != null && ! preferredUnit.isEmpty()) {
                 units = preferredUnit;
