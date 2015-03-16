@@ -266,6 +266,8 @@ public class WeatherProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Student: Start by getting a writable database
         final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
+        if (selection == null)
+            selection = "1"; //tell sql to select everything
         // Student: Use the uriMatcher to match the WEATHER and LOCATION URI's we are going to
         // handle.  If it doesn't match these, throw an UnsupportedOperationException.
         int match = sUriMatcher.match(uri);
@@ -309,6 +311,8 @@ public class WeatherProvider extends ContentProvider {
             Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         // Student: This is a lot like the delete function.  We return the number of rows impacted
         // by the update.
+        if(selection == null)
+            selection = "1"; //tell sql to match everything
         SQLiteDatabase database = mOpenHelper.getWritableDatabase();
         normalizeDate(values);
         int match = sUriMatcher.match(uri);
@@ -320,7 +324,7 @@ public class WeatherProvider extends ContentProvider {
                 break;
             }
             case WEATHER : {
-                updatedRows = database.update(WeatherContract.LocationEntry.TABLE_NAME, values,
+                updatedRows = database.update(WeatherContract.WeatherEntry.TABLE_NAME, values,
                         selection,selectionArgs);
                 break;
             }
