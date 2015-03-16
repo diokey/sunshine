@@ -20,8 +20,10 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteTransactionListener;
 import android.net.Uri;
 
 import java.sql.Statement;
@@ -233,36 +235,65 @@ public class WeatherProvider extends ContentProvider {
         Uri returnUri;
 
         switch (match) {
-            case WEATHER: {
+            case WEATHER : {
                 normalizeDate(values);
                 long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
+                if (_id > 0)
                     returnUri = WeatherContract.WeatherEntry.buildWeatherUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case LOCATION : {
+                normalizeDate(values);
+                long _id = db.insert(WeatherContract.LocationEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = WeatherContract.LocationEntry.buildLocationUri(_id);
+                } else {
+                    throw new SQLException("Failed to insert row into "+uri);
+                }
                 break;
             }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
+        db.close();
         return returnUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Student: Start by getting a writable database
-
+        final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
         // Student: Use the uriMatcher to match the WEATHER and LOCATION URI's we are going to
         // handle.  If it doesn't match these, throw an UnsupportedOperationException.
+        int match = sUriMatcher.match(uri);
+        int affectedRows = 0;
+
+        switch (match) {
+            case LOCATION : {
+                affectedRows = database.delete(WeatherContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case WEATHER : {
+                affectedRows = database.delete(WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("unknown uri"+uri);
+        }
 
         // Student: A null value deletes all rows.  In my implementation of this, I only notified
         // the uri listeners (using the content resolver) if the rowsDeleted != 0 or the selection
         // is null.
         // Oh, and you should notify the listeners here.
+        if (affectedRows != 0 || selection == null)
+            getContext().getContentResolver().notifyChange(uri, null);
 
+        database.close();
         // Student: return the actual rows deleted
-        return 0;
+        return affectedRows;
     }
 
     private void normalizeDate(ContentValues values) {
